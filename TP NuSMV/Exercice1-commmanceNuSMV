@@ -1,0 +1,5 @@
+-- Exercice 1
+
+go
+
+SPEC AG(request -> AF state = busy)

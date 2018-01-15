@@ -10,3 +10,4 @@ ASSIGN
  esac;
 
 SPEC AG(request -> AF state = busy)
+LTLSPEC G state = ready

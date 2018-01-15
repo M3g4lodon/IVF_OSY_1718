@@ -1,0 +1,58 @@
+MODULE main
+VAR 
+	q0: boolean;
+	q1: boolean;
+	q2: boolean;
+	q3: boolean;
+DEFINE
+	a:=case
+		q0:TRUE;
+		q1:FALSE;
+		q2:FALSE;
+		q3:TRUE;
+	esac;
+	
+	b:=case
+		q0:FALSE;
+		q1:FALSE;
+		q2:TRUE;
+		q3:TRUE;
+	esac;
+ASSIGN
+	init(q0):=TRUE;
+	init(q1):=FALSE;
+	init(q2):=FALSE;
+	init(q3):=FALSE;
+
+	next(q0):=case
+		q0:FALSE;
+		q3:TRUE;
+		TRUE:FALSE;
+	esac;
+	next(q1):=case
+		q0:{TRUE,FALSE};
+		q1:FALSE;
+		TRUE:FALSE;
+	esac;
+	next(q2):=case
+		q2:TRUE;
+		q0 & !next(q1):{TRUE,FALSE};
+		q1:TRUE;
+		TRUE:FALSE;
+	esac;
+	next(q3):=case
+		q0 & !next(q1) & !next(q2):TRUE;
+		q3:FALSE;
+		TRUE:FALSE;
+	esac;
+
+--
+LTLSPEC G a
+LTLSPEC a U b
+LTLSPEC a U X( a & !b)
+LTLSPEC X (!b) & G((!a) | (!b))
+LTLSPEC X(a & b) & F((!a) & (!b))
+SPEC EF EG a
+SPEC EF EG b
+LTLSPEC F((G a ) | (G b))
+	
