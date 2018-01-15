@@ -1,0 +1,17 @@
+MODULE main
+VAR
+ x : 0..3;
+
+DEFINE
+ phi:= x=2;
+ psi:= x=3;
+ASSIGN
+ init(x) := 0;
+ next(x) := case
+  x = 3 : 0;
+  TRUE : x+1;
+ esac;
+
+--
+SPEC AF (phi) | AF (psi)
+SPEC AF (phi | psi)

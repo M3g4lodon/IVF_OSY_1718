@@ -1,0 +1,17 @@
+MODULE main
+VAR
+ request : boolean ;
+ state : {ready, busy};
+
+DEFINE
+ phi:=state=ready;
+ASSIGN
+ init(state) := ready;
+ next(state) := case
+  state = ready & request : busy;
+  TRUE : {ready,busy};
+ esac;
+
+--
+SPEC EF phi
+SPEC EG phi
