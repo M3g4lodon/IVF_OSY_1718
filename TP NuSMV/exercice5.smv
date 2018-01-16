@@ -1,0 +1,39 @@
+MODULE main
+
+VAR
+	lombric:boolean;
+	millepatte:boolean;
+	sauterelle:boolean;
+	feuille:boolean;
+
+DEFINE 
+	voyage:= lombric != next(lombric) | millepatte != next(millepatte) | sauterelle != next(sauterelle);
+
+ASSIGN	
+	init(lombric):= FALSE;
+	init(millepatte):=FALSE;
+	init(sauterelle):=FALSE;
+	init(feuille):=FALSE;
+	
+	next(feuille):=case
+		voyage: !feuille;
+		TRUE:feuille;
+	esac;
+
+	next(lombric):=case
+		lombric = feuille:{TRUE,FALSE};
+		TRUE:lombric;
+	esac;
+	
+	next(millepatte):=case
+		millepatte = feuille &(lombric != next(lombric)):{TRUE, FALSE};
+		TRUE:millepatte;
+	esac;
+	
+	next(sauterelle):= case
+		sauterelle = feuille &(lombric != next(lombric)):{TRUE, FALSE};
+		TRUE: sauterelle;
+	esac;
+
+--
+SPEC EF (lombric & millepatte & sauterelle)

@@ -2,6 +2,9 @@ MODULE main
 VAR
  request : boolean ;
  state : {ready, busy};
+
+DEFINE
+ phi:=state=ready;
 ASSIGN
  init(state) := ready;
  next(state) := case
@@ -9,5 +12,6 @@ ASSIGN
   TRUE : {ready,busy};
  esac;
 
-SPEC AG(request -> AF state = busy)
-LTLSPEC G state = ready
+--
+SPEC EF phi
+SPEC EG phi
