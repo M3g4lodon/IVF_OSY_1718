@@ -1,0 +1,31 @@
+MODULE main
+VAR
+	b1 : boolean;
+	b2 : boolean;
+	b3 : boolean;
+ASSIGN
+	init(b1):=TRUE;
+	init(b2):=FALSE;
+	init(b3):=FALSE;
+	
+	next(b1):=case
+		b1: FALSE;
+		b2|b3:{TRUE,FALSE};
+		TRUE:FALSE;
+	esac;
+
+	next(b2):=case
+		b2:FALSE;
+		!next(b1):{TRUE,FALSE};
+		TRUE:FALSE;
+	esac;
+	next(b3):=case
+		b3:FALSE;
+		!next(b1)&!next(b2):TRUE;
+		TRUE:FALSE;
+	esac;
+
+--
+LTLSPEC G !(b1&b2|b1&b3|b2&b3)
+LTLSPEC G (b1|b2|b3)
+LTLSPEC G (b1 -> X!b1)&(b2 -> X!b2)&(b3 -> X!b3)
