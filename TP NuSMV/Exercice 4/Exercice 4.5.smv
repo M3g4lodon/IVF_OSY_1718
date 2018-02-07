@@ -1,0 +1,19 @@
+MODULE main
+VAR
+	a : boolean;
+	b : boolean;
+ASSIGN
+	init(a):=TRUE;
+	init(b):=FALSE;
+	
+	next(a):=!a;
+
+	next(b):=!b;
+DEFINE
+	p1:=a;
+	p2:=b;
+	q1:= a;
+	q2 :=b;
+-- 
+
+LTLSPEC (G F p1 & G F p2) -> G (q1 -> F q2)
