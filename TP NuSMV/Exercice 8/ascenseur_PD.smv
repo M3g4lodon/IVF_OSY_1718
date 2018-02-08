@@ -1,0 +1,49 @@
+MODULE main
+VAR
+	current_floor : 1..3;
+	demand_in_lift : 0..3; -- 0 means no demand
+	call_1 : boolean; -- this is the parking floor
+	call_2 : boolean;
+	call_3 : boolean;
+	current_dir : {UP,DOWN};
+
+ASSIGN
+	next(current_floor) := case
+		call_2 & (current_floor=1 | current_floor=3) : 2;
+		call_1 & call_3 & current_floor=2 & current_dir=UP : 3;
+		call_1 & call_3 & current_floor=2 & current_dir=DOWN : 1;
+		call_1 & current_floor!=1: 1;
+		call_2 & current_floor!=2: 2;
+		call_3 & current_floor!=3: 3;
+		demand_in_lift = 1 : 1;
+		demand_in_lift = 2 : 2;
+		demand_in_lift = 3 : 3;
+		TRUE : 1;
+	esac;
+	next(demand_in_lift) := case
+		next(current_floor)=1 : {2,3,0}; -- We consider that a user that has just entered the lift won't ask to stay on the same floor
+		next(current_floor)=2 : {1,3,0};
+		next(current_floor)=3 : {1,2,0};
+	esac;
+	next(call_1) := case
+		call_1 & next(current_floor)!=1 : TRUE; -- The calls stand while they haven't been satisfied
+		TRUE : {TRUE,FALSE};
+	esac;
+	next(call_2) := case
+		call_2 & next(current_floor)!=2 : TRUE;
+		TRUE : {TRUE,FALSE};
+	esac;
+	next(call_3) := case
+		call_3 & next(current_floor)!=3 : TRUE;
+		TRUE : {TRUE,FALSE};
+	esac;
+	next(current_dir) := case
+		next(current_floor) = 1 : UP;
+		next(current_floor) = 3 : DOWN;
+		current_floor = 1 : UP;
+		current_floor = 3 : DOWN;
+		TRUE : current_dir;
+	esac;
+
+
+LTLSPEC (G call_1 -> F current_floor = 1) & (G call_2 -> F current_floor = 2) & (G call_3 -> F current_floor = 3); -- The specification not satisfied, which confirms what we could expect.
