@@ -1,0 +1,19 @@
+MODULE main
+VAR
+	x : 0..3;
+	y : boolean;
+ASSIGN
+	init(x):={0,1,2,3};
+	init(y):={TRUE,FALSE};
+	
+	next(x):= case
+		y:(x+1) mod 4;
+		!y:x;
+	esac;
+
+DEFINE
+	phi := x=3;
+-- 
+
+SPEC EF !phi
+SPEC ! (AF phi)
