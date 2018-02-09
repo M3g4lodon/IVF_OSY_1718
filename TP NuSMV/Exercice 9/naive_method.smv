@@ -1,0 +1,248 @@
+MODULE main
+VAR
+	x01 : 0..5;
+	x02 : 0..5;
+	x03 : 0..5;
+	x04 : 0..5;
+	x05 : 0..5;
+	x06 : 0..5;
+	x07 : 0..5;
+	x08 : 0..5;
+	x09 : 0..5;
+	x10 : 0..5;
+	x11 : 0..5;
+	x12 : 0..5;
+	x13 : 0..5;
+	x14 : 0..5;
+	x15 : 0..5;
+	x16 : 0..5;
+	x17 : 0..5;
+	x18 : 0..5;
+	x19 : 0..5;
+	x20 : 0..5;
+	x21 : 0..5;
+	x22 : 0..5;
+	x23 : 0..5;
+	x24 : 0..5;
+	move : 1..6;
+
+ASSIGN
+	next(move) := {1,2,3,4,5,6};
+
+	next(x01) := case
+		next(move)=1 : x03;
+		next(move)=2 : x20;
+		next(move)=3 : x02;
+		next(move)=4 : x01;
+		next(move)=5 : x01;
+		TRUE         : x01;
+	esac;
+
+	next(x02) := case
+		next(move)=1 : x04;
+		next(move)=2 : x02;
+		next(move)=3 : x10;
+		next(move)=4 : x02;
+		next(move)=5 : x19;
+		TRUE         : x02;
+	esac;
+
+	next(x03) := case
+		next(move)=1 : x05;
+		next(move)=2 : x03;
+		next(move)=3 : x22;
+		next(move)=4 : x03;
+		next(move)=5 : x04;
+		TRUE         : x03;
+	esac;
+
+	next(x04) := case
+		next(move)=1 : x06;
+		next(move)=2 : x04;
+		next(move)=3 : x04;
+		next(move)=4 : x04;
+		next(move)=5 : x12;
+		TRUE         : x23;
+	esac;
+
+	next(x05) := case
+		next(move)=1 : x07;
+		next(move)=2 : x05;
+		next(move)=3 : x05;
+		next(move)=4 : x05;
+		next(move)=5 : x23;
+		TRUE         : x15;
+	esac;
+
+	next(x06) := case
+		next(move)=1 : x08;
+		next(move)=2 : x24;
+		next(move)=3 : x06;
+		next(move)=4 : x06;
+		next(move)=5 : x06;
+		TRUE         : x06;
+	esac;
+
+	next(x07) := case
+		next(move)=1 : x01;
+		next(move)=2 : x15;
+		next(move)=3 : x07;
+		next(move)=4 : x07;
+		next(move)=5 : x07;
+		TRUE         : x19;
+	esac;
+
+	next(x08) := case
+		next(move)=1 : x02;
+		next(move)=2 : x07;
+		next(move)=3 : x18;
+		next(move)=4 : x08;
+		next(move)=5 : x08;
+		TRUE         : x08;
+	esac;
+
+	next(x09) := case
+		next(move)=1 : x09;
+		next(move)=2 : x17;
+		next(move)=3 : x01;
+		next(move)=4 : x11;
+		next(move)=5 : x09;
+		TRUE         : x09;
+	esac;
+
+	next(x10) := case
+		next(move)=1 : x10;
+		next(move)=2 : x10;
+		next(move)=3 : x09;
+		next(move)=4 : x12;
+		next(move)=5 : x18;
+		TRUE         : x10;
+	esac;
+
+	next(x11) := case
+		next(move)=1 : x11;
+		next(move)=2 : x11;
+		next(move)=3 : x21;
+		next(move)=4 : x13;
+		next(move)=5 : x03;
+		TRUE         : x11;
+	esac;
+
+	next(x12) := case
+		next(move)=1 : x12;
+		next(move)=2 : x12;
+		next(move)=3 : x12;
+		next(move)=4 : x14;
+		next(move)=5 : x11;
+		TRUE         : x24;
+	esac;
+
+	next(x13) := case
+		next(move)=1 : x13;
+		next(move)=2 : x13;
+		next(move)=3 : x13;
+		next(move)=4 : x15;
+		next(move)=5 : x22;
+		TRUE         : x14;
+	esac;
+
+	next(x14) := case
+		next(move)=1 : x14;
+		next(move)=2 : x21;
+		next(move)=3 : x14;
+		next(move)=4 : x16;
+		next(move)=5 : x14;
+		TRUE         : x06;
+	esac;
+
+	next(x15) := case
+		next(move)=1 : x15;
+		next(move)=2 : x16;
+		next(move)=3 : x15;
+		next(move)=4 : x09;
+		next(move)=5 : x15;
+		TRUE         : x20;
+	esac;
+
+	next(x16) := case
+		next(move)=1 : x16;
+		next(move)=2 : x08;
+		next(move)=3 : x17;
+		next(move)=4 : x10;
+		next(move)=5 : x16;
+		TRUE         : x16;
+	esac;
+
+	next(x17) := case
+		next(move)=1 : x18;
+		next(move)=2 : x06;
+		next(move)=3 : x03;
+		next(move)=4 : x17;
+		next(move)=5 : x17;
+		TRUE         : x17;
+	esac;
+
+	next(x18) := case
+		next(move)=1 : x19;
+		next(move)=2 : x18;
+		next(move)=3 : x11;
+		next(move)=4 : x18;
+		next(move)=5 : x05;
+		TRUE         : x18;
+	esac;
+
+	next(x19) := case
+		next(move)=1 : x20;
+		next(move)=2 : x19;
+		next(move)=3 : x19;
+		next(move)=4 : x19;
+		next(move)=5 : x13;
+		TRUE         : x12;
+	esac;
+
+	next(x20) := case
+		next(move)=1 : x17;
+		next(move)=2 : x14;
+		next(move)=3 : x20;
+		next(move)=4 : x20;
+		next(move)=5 : x20;
+		TRUE         : x04;
+	esac;
+
+	next(x21) := case
+		next(move)=1 : x21;
+		next(move)=2 : x01;
+		next(move)=3 : x08;
+		next(move)=4 : x22;
+		next(move)=5 : x21;
+		TRUE         : x21;
+	esac;
+
+	next(x22) := case
+		next(move)=1 : x22;
+		next(move)=2 : x22;
+		next(move)=3 : x16;
+		next(move)=4 : x23;
+		next(move)=5 : x02;
+		TRUE         : x22;
+	esac;
+
+	next(x23) := case
+		next(move)=1 : x23;
+		next(move)=2 : x23;
+		next(move)=3 : x23;
+		next(move)=4 : x24;
+		next(move)=5 : x10;
+		TRUE         : x15;
+	esac;
+
+	next(x24) := case
+		next(move)=1 : x24;
+		next(move)=2 : x09;
+		next(move)=3 : x24;
+		next(move)=4 : x21;
+		next(move)=5 : x24;
+		TRUE         : x07;
+	esac;
+
+SPEC AG (x01=x02 | x01=x09 | x01=x10 | x03=x04 | x03=x11 | x03=x12 | x05=x06 | x05=x13 | x05=14 | x07=x08 | x07=x15 | x07=x16 | x17=x18 | x17=x19 | x17=x20 | x21=x22 | x21=x23 | x21=x24);
