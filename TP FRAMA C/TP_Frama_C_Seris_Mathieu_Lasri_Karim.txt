@@ -1,0 +1,210 @@
+TP de Frama C
+par Mathieu Seris et Karim Lasri
+
+Exercice 1:
+1.1) Le fichier n'est pas nécessairement prouvé, en tout cas il vérifie la spécification qui a été écrite.
+
+1.2) La spécification de maxint n'est pas correcte car on ne vérifie pas que le résultat est égal à x ou y.
+
+La version suivante satisfait les spécifications sans retourner le max de x et y.
+
+```#include <limits.h>
+/*@  ensures  (\result >= x && \result >=y) ; */
+
+int maxint (int x, int y) { 
+  return (INT_MAX); 
+}```
+
+1.3) La spécification corrigée est la suivante :
+```/*@  ensures  (\result >= x && \result >=y && (\result == x || \result == y) ) ; */```
+
+La version erronée de la question précédente ne passe plus le code
+
+Le programme complet est :
+
+```/*@  ensures  (\result >= x && \result >=y && (\result == x || \result == y) ) ; */
+int maxint (int x, int y) { 
+  return (x > y) ? x : y; 
+}```
+
+Il faut, en plus de vérifier que le résultat est plus grand que les deux valeurs, que le résultat soit égal à l'une des deux pour que le programme soit correct.
+
+1.4) On en déduit l'importance des spécifications : si elles sont trop imprécises ou si elles ne caractérisent pas la valeur attendue, elles peuvent faire passer pour vraies des implémentations incorrectes, comme à la question 1.2 (faux-positifs).
+____________________
+
+Exercice 2:
+2.1) Le fichier vérifie bien la spécification qui a été écrite.
+
+2.2) Le fichier n'est pas complètement prouvé car il y a un risque de dépassement de la limite autorisée pour les entiers (2^31-11). Cet entier étant très grand, le risque de dépassement est faible, néanmoins il n'est pas nul.
+
+2.3) En ajoutant la précondition selon laquelle n est borné entre -100 et 100, la preuve passe maintenant.
+```
+/*@ requires (n <= 100 && n >= -100) ;    
+ensures \result == \old(n) + 1 ;    */
+
+int incr(int n)
+{
+  n=n+1;
+  return n;
+};```
+____________________
+
+Exercice 3:
+3.1) Le fichier n'est pas prouvé car nous n'avons pas vérifié que le pointeur était valide.
+
+3.2) Nous avons rajouté la précondition correspondante, le programme passe maintenant.
+Le programme complet est le suivant :vant :
+
+```/*@ requires *p <= 100 && *p >= -100 && \valid(p) ;
+    ensures \result == \old(*p)+ 1 ;  */
+
+int incr(int *p)
+{
+  *p = *p + 1;
+  return *p;
+};
+```
+____________________
+
+Exercice 4:
+4.1) La preuve ne est vérifiée pas pour ces versions erronées.
+
+4.2) Nous utilisons alors la spécification selon laquelle seul le pointeur vers p peut être modifié dans la fonction. En effet, le pointeur existe après l'appel et est considéré comme une variable globale. Comme c'est la seule valeur qu'on souhaite modifier, il faut autoriser sa modification par assign.
+Voici le programme complet:
+
+``int m = 0;
+int t[10];
+int *q = &m;
+
+/*@ requires *p <= 100 && *p >= -100 && \valid(p);
+    ensures \result == \old(*p)+ 1 ;  
+    assigns *p ; */
+
+int incr(int *p)
+{
+  m = 10;
+  *p = *p + 1; 
+  return *p;
+};```
+
+4.3) Il faut spécifier les variables modifiées pour éviter de malencontreusement modifier des variables globales dans le corps du programme lorsque ce n'est pas souhaité (problème des effets de bords).
+____________________
+
+Exercice 5:
+5.1) Le fichier n'est pas prouvé, car les pointeurs a et b peuvent se chevaucher, ou occuper la même case mémoire (un pointeur peut pointer sur lui-même), auquel cas la condition d'invariance de b (*\old(b) = \olb(*b)) ne passe plus puisqu'en modifiant a, on modifie b.
+
+5.2) Il faut rajouter la condition '\separated(a,b)' dans la précondition afin de s'assurer que les pointeurs vers a et b occupent deux emplacements mémoire différents.
+```#include <limits.h>
+
+/*@
+  requires (INT_MIN <= *a + *b <= INT_MAX) && \separated(a,b);
+  requires \valid(a) && \valid(b);
+  assigns  *a;
+  ensures  *a == \old(*a)+ *b;
+  ensures  *b == \old(*b);
+*/
+void incr_a_by_b(int* a, int const* b){
+  *a += *b;
+}``` 
+____________________
+
+Exercice 6:
+Nous avons modifié les variants de boucle. Dans le premier cas, nous souhaitons décrémenter n jusqu'à ce qu'il atteigne 0. Donc n est notre variant de boucle.
+Dans le second cas, nous souhaitons incrémenter n jusqu'à 100, donc en prenant INT_MAX - n, on a bien les deux propriétés souhaitées (positivité et décroissance stricte à chaque itération).
+
+```void loop1(int n) { 
+  /*@ loop variant n; */
+  while (n > 0) n--; 
+}
+
+#include <limits.h>
+
+void loop2(int n) { 
+  /*@ loop variant INT_MAX-n; */
+  while (n < 100) n=n+1; 
+}
+____________________
+
+Exercice 7:
+7.1) Voici la correction du programme getMinSubarray.c :
+```/*@ requires \valid(t+(0..n-1)) && n > 0 && 0 <= k < n;
+  @ ensures (\forall integer i; k <= i < n ==> \result <= t[i]) &&
+  @   (\exists integer i; k <= i < n && \result == t[i]);
+  @ assigns \nothing;
+*/
+
+int getMinSubarray(int t[], int n, int k) { 
+  int res = t[k];
+  /*@ loop invariant k+1 <= i <= n &&
+    @   (\forall integer j; k <= j < i ==> res <= t[j]) &&
+    @   (\exists integer j; k <= j < i && res == t[j]); 
+    @ loop assigns i, res;
+    @ loop variant n - i;
+    @*/
+  for (int i = k+1; i < n; i++) 
+    if (t[i] < res) 
+      res = t[i];
+  return res;
+}```
+
+7.2) La partie permettant d'avoir une correction totale, on justifie la terminaison du programme grâce au variant de boucle.
+____________________
+
+Exercice 8:
+8.1) Voici le programme all-zeros.c modifié :
+```/*@ requires \valid(t+(0..n-1)) && n > 0;
+  @ assigns \nothing;
+  @ ensures \result <==> (\forall integer i; 0 <= i < n ==> t[i] == 0); 
+*/
+
+int all_zeros(int t[], int n) {
+  int k;
+  /*@ loop invariant  0 <= k <= n &&
+    @   (\forall integer j; 0 <= j < k ==> t[j] == 0); 
+    @ loop assigns k ;
+    @ loop variant n-k ; 
+  */
+  for(k = 0; k < n; k++) 
+    if (t[k] != 0) 
+      return 0;
+  return 1;
+}```
+
+8.2) C'est la deuxième partie de l'invariant "(\forall integer j; 0 <= j < k ==> t[j] == 0)" qui garantit que la postcondition est vraie pour un nombre quelconque d'itération puisqu'elle assure que tous les éléments inférieurs à la valeur courante sont nuls, donc après un nombre quelconque d'itérations, cela sera vrai pour tout le tableau.
+____________________
+
+Exercice 9:
+9.1) Voici le programme complété, la preuve passe bien pour ce programme :
+```
+/*@ lemma div_by_2_def: \forall integer n; 0 <= n - 2 * (n / 2) <= 1; */
+// le lemme peut rester non prouve
+
+#include<limits.h>
+
+/*@ requires 0<=length<INT_MAX && \valid(arr+(0..length-1)) && (\forall integer i; 0<=i<length-1 && arr[i]<=arr[i+1]);
+    assigns  \nothing;
+    ensures -1 <= \result < length &&
+      (\result == -1 ==> \forall integer i; 0<=i<length && arr[i]!=query) &&
+      (\result >= 0 ==>  \exists integer i; 0<=i<length && arr[i]==query) ;
+*/
+int binary_search(int* arr, int length, int query) {
+  int low = 0;
+  int high = length - 1;
+  /*@
+    loop invariant 0<=low<=length && high<length;
+    loop assigns   low, high;
+    loop variant   high-low+1;
+  */
+  while (low <= high) {
+    int mean = low + (high -low) / 2;
+    //int mean = (high +low) / 2; // Version avec erreur !!!
+    //@ assert low <= mean <= high;
+    if (arr[mean] == query) return mean;
+    if (arr[mean] < query) low = mean + 1;
+    else high = mean - 1;
+  }
+  return -1;
+}```
+
+
+9.2) Le programme ne passe plus. Donc le bug n'aurait pas pu passer inaperçu puisque l'outil de preuve que nous utilisons ne passe pas.
