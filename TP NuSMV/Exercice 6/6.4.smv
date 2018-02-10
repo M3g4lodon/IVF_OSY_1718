@@ -1,0 +1,16 @@
+MODULE main
+VAR
+ x : 0..1;
+
+DEFINE
+ psi:= x=1;
+ASSIGN
+ init(x) := 0;
+ next(x) := case
+  x = 0 : {0,1};
+  TRUE : 0;
+ esac;
+
+--
+SPEC AF !psi;
+SPEC !EG (psi);
