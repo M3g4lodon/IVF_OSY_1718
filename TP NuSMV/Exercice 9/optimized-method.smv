@@ -246,4 +246,4 @@ ASSIGN -- Give here any initial configuration
 		TRUE : corner8;
 	esac;
 
-SPEC AG (corner1!=1 | corner2!=2 | corner3!=3 | corner4!=4 | corner5!=5 | corner6!=6 | corner7!=7 | corner8!=8);
+SPEC  AG (corner1!=1 | corner2!=2 | corner3!=3 | corner4!=4 | corner5!=5 | corner6!=6 | corner7!=7 | corner8!=8);
